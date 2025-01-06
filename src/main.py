@@ -1,6 +1,23 @@
-import csv
-import sys
+#!/usr/bin/env python3
 
+import sys
+import importlib
+
+# 1) Check if the modules even exists...
+def check_required_modules():
+    """Check for required modules and notify the user if any are missing."""
+    required_modules = ["requests", "csv", "logging"]
+    for module_name in required_modules:
+        if importlib.util.find_spec(module_name) is None:
+            print(f"Error: The '{module_name}' module is not installed.")
+            print(f"Please install it before running this script (`pip install {module_name}`).")
+            sys.exit(1)
+
+check_required_modules()
+
+# 2) Now that's out of the way, let's import it.
+import csv
+import logging
 import requests
 
 from aggregator import aggregate_weather_data
@@ -14,10 +31,9 @@ def internet_connection():
     try:
         response = requests.get("https://example.org", timeout=10)
         return True
-    except requests.ConnectionError as e:
+    except requests.ConnectionError:
         return False
 
-"""Menu, What to say more...."""
 def menu():
     """Display the main menu and return the user's choice."""
     print("\nSelect an option:")
@@ -30,7 +46,6 @@ def menu():
 def modify_preferences():
     """The user can Add and Delete city from the Preferences."""
     preferences = load_preferences()
-
     while True:
         print("\nPreferred Cities:")
         for i, city in enumerate(preferences, 1):
@@ -47,7 +62,7 @@ def modify_preferences():
             if new_city and new_city not in preferences:
                 preferences.append(new_city)
                 save_preferences(preferences)
-                print(f"{new_city} has beenadded to preferences.")
+                print(f"{new_city} has been added to preferences.")
             else:
                 print("City already exists or invalid input.")
         elif choice == "2":
@@ -56,7 +71,7 @@ def modify_preferences():
                 if 0 <= city_index < len(preferences):
                     removed_city = preferences.pop(city_index)
                     save_preferences(preferences)
-                    print(f"{removed_city} succesfully removed from preferences.")
+                    print(f"{removed_city} successfully removed from preferences.")
                 else:
                     print("Invalid choice.")
             except ValueError:
@@ -69,7 +84,7 @@ def modify_preferences():
 def main():
     if not internet_connection():
         logging.error("In order to continue, you need to have an internet connection.")
-        sys.exit()
+        sys.exit(1)
 
     data_sources = {
         "OpenWeatherMap": API_KEYS["OpenWeatherMap"],
@@ -123,7 +138,7 @@ def main():
                 for api in ["Open Weather Map", "Visual Crossing", "Weather API"]:
                     key = input(f"Enter your new API key for {api}: ").strip()
                     writer.writerow([api, key])
-            print("API keys hsve been updated successfully.")
+            print("API keys have been updated successfully.")
         elif choice == "3":
             print("Accessing preferences...")
             modify_preferences()
@@ -132,7 +147,6 @@ def main():
             break
         else:
             print("Unrecognized choice. Please try again.")
-
 
 if __name__ == "__main__":
     main()
