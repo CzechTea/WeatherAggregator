@@ -16,8 +16,9 @@ Have you ever checked those forecasts on multiple websites and got that it will 
 You might use this program to only check the weather in your place. This program can save your preferences and once you ask for a weather forecast, you can choose your favourite place!
 
 ## Setup
-To use this program. You need
+To use this program. You'll need
 
+- Installed packages of logging,requests,sys,csv,os,unittest,concurrent
 - An Internet Connection
 - WeatherAPI API key (you get it by signing in. It's Free!)
 - Open Weather Map API key (you get it by signing in. It's Free!)
